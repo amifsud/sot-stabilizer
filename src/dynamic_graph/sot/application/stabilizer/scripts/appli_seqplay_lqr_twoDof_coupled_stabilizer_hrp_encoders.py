@@ -54,7 +54,8 @@ stabilizer.setkfs(kfe)
 stabilizer.setkfd(kfv)
 
 plug(robot.device.velocity,robot.dynamic.velocity)
-#plug(robot.device.velocity,robot.dynamicEncoders.velocity)
+plug(robot.device.velocity,robot.dynamicFF.velocity)
+plug(robot.device.velocity,robot.dynamicEncoders.velocity)
 
 # Simulation
 appli.comRef.value=(0.01068, 0.00014, 0.80771000000000004) # two feet Mx=My=0
