@@ -256,6 +256,16 @@ namespace sotStabilizer
         constantInertia_=b;
     }
 
+    void setRatioGains(const double & r)
+    {
+        ratioGains_=r;
+    }
+
+    double getRatioGains() const
+    {
+        return controller_.getRatioGains();
+    }
+
 
     Vector& getControl(Vector& control, const int& time);
     inline void computeDynamicsMatrix(const stateObservation::Vector3 cl, const stateObservation::Matrix Kth, const stateObservation::Matrix Kdth, const int& time);
@@ -414,6 +424,8 @@ namespace sotStabilizer
 
     Vector zmp_;
     bool zmpMode_;
+
+    double ratioGains_;
 
     stateObservation::Vector xSimu_;
 

@@ -65,6 +65,16 @@ public:
 
     virtual stateObservation::Matrix getLastGain() const ;
 
+    virtual void setRatioGains(const double & r)
+    {
+        ratioGains_=r;
+    }
+
+    virtual double getRatioGains() const
+    {
+        return ratioGains_;
+    }
+
 protected:
     inline bool checkDynamicsMatrices_(const stateObservation::Matrix& A,
                                         const stateObservation::Matrix& B)
@@ -108,6 +118,7 @@ protected:
     bool changedValue_;
 
     stateObservation::Matrix lastGain_;
+    double ratioGains_;
 
     stateObservation::Vector u_;
 

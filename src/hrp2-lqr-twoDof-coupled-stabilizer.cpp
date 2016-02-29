@@ -133,7 +133,8 @@ namespace sotStabilizer
     B_(stateObservation::Matrix::Zero(stateSize_,controlSize_)),
     Q_(stateObservation::Matrix::Zero(stateSize_,stateSize_)),
     R_(stateObservation::Matrix::Zero(controlSize_,controlSize_)),
-    I_(3,3), constantInertia_(false), xSimu_(stateSize_)
+    I_(3,3), constantInertia_(false), xSimu_(stateSize_),
+    ratioGains_(1)
   {
 
     // Register signals into the entity.
@@ -437,6 +438,24 @@ namespace sotStabilizer
                new ::dynamicgraph::command::Setter <HRP2LQRTwoDofCoupledStabilizer,bool>
                 (*this, & HRP2LQRTwoDofCoupledStabilizer::constantInertia ,docstring));
 
+    docstring  =
+            "\n"
+            "    Sets ratio gains \n"
+            "\n";
+
+    addCommand(std::string("setRatioGains"),
+               new ::dynamicgraph::command::Setter <HRP2LQRTwoDofCoupledStabilizer,double>
+                (*this, & HRP2LQRTwoDofCoupledStabilizer::setRatioGains ,docstring));
+
+    docstring  =
+            "\n"
+            "    Gets ratio gains \n"
+            "\n";
+
+    addCommand(std::string("getRatioGains"),
+               new ::dynamicgraph::command::Getter <HRP2LQRTwoDofCoupledStabilizer,double>
+                (*this, & HRP2LQRTwoDofCoupledStabilizer::getRatioGains ,docstring));
+
     Vector rfconf(6);
     rfconf.setZero();
     Vector lfconf(6);
@@ -708,6 +727,9 @@ namespace sotStabilizer
     dxk.resize(stateSize_);
     dxk=xk-xkRef;
     stateErrorSOUT_.setConstant (convertVector<dynamicgraph::Vector>(dxk));
+
+    // ratioGains
+    controller_.setRatioGains(ratioGains_);
 
     /// Computing control
 

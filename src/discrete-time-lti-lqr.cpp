@@ -17,6 +17,7 @@ namespace controller
         computedInput_=false;
         remainingTime_=-1;
         horizon_=10;
+        ratioGains_=1;
     }
 
     unsigned DiscreteTimeLTILQR::getStateSize() const
@@ -63,7 +64,7 @@ namespace controller
 
 
             checkState_(x_);
-            u_ = -lastGain_* x_;
+            u_ = -ratioGains_*lastGain_* x_;
 
             if (remainingTime_>0)
             {
