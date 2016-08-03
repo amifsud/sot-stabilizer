@@ -90,6 +90,8 @@ estEnc.setAbsolutePosVariance(1e-4)
 appli.gains['trunk'].setConstant(2)
 stabilizer.setFixedGains(False)
 stabilizer.setHorizon(400)
+est.setOn(True)
+estEnc.setOn(True)
 
 # Perturbation Generator on control
 perturbatorControl = VectorPerturbationsGenerator('perturbatedControl')

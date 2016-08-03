@@ -75,6 +75,7 @@ est.setKtv(matrixToTuple(np.diag((60,60,60))))
 appli.gains['trunk'].setConstant(2)
 stabilizer.setFixedGains(True)
 stabilizer.setHorizon(400)
+est.setOn(False)
 
 appli.robot.addTrace( est.name,'flexibility' )
 appli.robot.addTrace( est.name,'state' )
