@@ -60,19 +60,17 @@ plug (robot.device.forceRLEG, zmp.force_1)
 plug (robot.frames['leftFootForceSensor'].position , zmp.sensorPosition_0)
 plug (robot.frames['rightFootForceSensor'].position, zmp.sensorPosition_1)
 
-identity = ((1,0,0,0),(0,1,0,0),(0,0,1,0),(0,0,0,1))
-
 zmpEst = ZmpFromForces('zmpEstimated')
 plug (est.forcesSupport1 , zmpEst.force_0)
 plug (est.forcesSupport2, zmpEst.force_1)
-zmpEst.sensorPosition_0.value = identity
-zmpEst.sensorPosition_1.value = identity
+plug (est.interface.positionSupport1 , zmpEst.sensorPosition_0)
+plug (est.interface.positionSupport2, zmpEst.sensorPosition_1)
 
 zmpEnc = ZmpFromForces('zmpEncoders')
 plug (estEnc.forcesSupport1 , zmpEnc.force_0)
 plug (estEnc.forcesSupport2, zmpEnc.force_1)
-zmpEnc.sensorPosition_0.value = identity
-zmpEnc.sensorPosition_1.value = identity
+plug (estEnc.interface.positionSupport1 , zmpEnc.sensorPosition_0)
+plug (estEnc.interface.positionSupport2, zmpEnc.sensorPosition_1)
 
 # State and measurement definition
 estEnc.interface.setWithUnmodeledMeasurements(False)
