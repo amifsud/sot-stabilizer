@@ -78,6 +78,11 @@ estEnc.interface.setWithModeledForces(True)
 estEnc.interface.setWithAbsolutePose(False)
 estEnc.setWithComBias(False)
 
+est.interface.setWithUnmodeledMeasurements(False)
+est.interface.setWithModeledForces(True)
+est.interface.setWithAbsolutePose(False)
+est.setWithComBias(False)
+
 # Covariances
 estEnc.setProcessNoiseCovariance(matrixToTuple(np.diag((1e-8,)*12+(1e-4,)*12+(1.e-2,)*6+(1e-15,)*2+(1.e-8,)*3)))
 estEnc.setMeasurementNoiseCovariance(matrixToTuple(np.diag((1e-3,)*3+(1e-6,)*3))) 
