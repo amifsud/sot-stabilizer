@@ -138,7 +138,10 @@ INSTALL(FILES
   dynamic_graph/sot/application/stabilizer/scenarii/seqplay_stabilizer_hrp2.py
   dynamic_graph/sot/application/stabilizer/scenarii/seqplay_lqr_twoDof_coupled_stabilizer_hrp2.py
   dynamic_graph/sot/application/stabilizer/scenarii/seqplay_lqr_twoDof_coupled_stabilizer_hrp2_encoders.py
+  dynamic_graph/sot/application/stabilizer/scenarii/pg_lqr_twoDof_coupled_stabilizer_hrp2_encoders.py
+  dynamic_graph/sot/application/stabilizer/scenarii/pg_lqr_twoDof_coupled_stabilizer_hrp2.py
   dynamic_graph/sot/application/stabilizer/scenarii/seqplay_lqr_twoDof_coupled_stabilizer.py
+  dynamic_graph/sot/application/stabilizer/scenarii/pg_lqr_twoDof_coupled_stabilizer.py
   dynamic_graph/sot/application/stabilizer/scenarii/hand_compensater_chicken.py
   dynamic_graph/sot/application/stabilizer/scenarii/hand_compensater_solver_kine.py
   dynamic_graph/sot/application/stabilizer/scenarii/leg_oscillator.py
@@ -165,6 +168,8 @@ INSTALL(FILES
   dynamic_graph/sot/application/stabilizer/scripts/appli_seqplay_stabilizer_hrp.py
   dynamic_graph/sot/application/stabilizer/scripts/appli_seqplay_lqr_twoDof_coupled_stabilizer_hrp.py
   dynamic_graph/sot/application/stabilizer/scripts/appli_seqplay_lqr_twoDof_coupled_stabilizer_hrp_encoders.py
+  dynamic_graph/sot/application/stabilizer/scripts/appli_pg_lqr_twoDof_coupled_stabilizer_hrp_encoders.py
+  dynamic_graph/sot/application/stabilizer/scripts/appli_pg_lqr_twoDof_coupled_stabilizer_hrp.py
 
   DESTINATION ${PYTHON_SITELIB}/dynamic_graph/sot/application/stabilizer/scripts
   )
