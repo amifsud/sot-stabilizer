@@ -71,6 +71,7 @@ stabilizer.setHorizon(400)
 est.setOn(True)
 
 appli.robot.addTrace( est.name,'state' )
+appli.robot.addTrace( est.name,'momenta')
 appli.robot.addTrace( est.interface.name,'input')
 appli.robot.addTrace( est.interface.name,'measurement')
 appli.robot.addTrace( zmp.name, 'zmp')

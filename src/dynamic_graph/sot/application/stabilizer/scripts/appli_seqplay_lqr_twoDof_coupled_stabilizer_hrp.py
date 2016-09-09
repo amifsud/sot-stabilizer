@@ -77,6 +77,7 @@ est.setOn(False)
 
 appli.robot.addTrace( est.name,'flexibility' )
 appli.robot.addTrace( est.name,'state' )
+appli.robot.addTrace( est.name,'momenta')
 appli.robot.addTrace( est.name,'inovation' )
 appli.robot.addTrace( est.interface.name,'inputConstSize')
 appli.robot.addTrace( est.interface.name,'measurementConstSize')
