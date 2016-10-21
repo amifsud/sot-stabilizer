@@ -38,6 +38,7 @@ ADD_LIBRARY(${LIBRARY_NAME}
   hrp2-lqr-decoupled-stabilizer.cpp
   hrp2-lqr-twoDof-coupled-stabilizer.cpp
   hrp2-linear-state-space-stabilizer.cpp
+  resolve-momentum-control.cpp
   perturbations-generator.cpp
   discrete-time-non-alg-riccati-eqn.cpp
   discrete-time-lti-lqr.cpp
