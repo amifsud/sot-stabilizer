@@ -16,6 +16,8 @@ from dynamic_graph.sot.application.stabilizer import HRP2DecoupledStabilizer
 from dynamic_graph.sot.application.velocity.precomputed_tasks import Application
 from dynamic_graph.sot.dynamics.zmp_from_forces import ZmpFromForces
 import dynamic_graph.sot.pattern_generator.walking as pg
+from dynamic_graph.sot.tools import Oscillator
+from dynamic_graph.sot.core import Add_of_vector
 
 from dynamic_graph.sot.core import Stack_of_vector
 
@@ -71,6 +73,8 @@ class PgLqrTwoDofCoupledStabilizer(Application):
         self.initTasks()
         self.initTaskGains()
 
+	self.initOscillator();
+
         self.initialStack()
 
     # --- TASKS --------------------------------------------------------------------
@@ -125,6 +129,17 @@ class PgLqrTwoDofCoupledStabilizer(Application):
             self.gains['ankles'].setConstant(10)
             self.gains['right-wrist'].setByPoint(4,0.2,0.01,0.8)
             self.gains['left-wrist'].setByPoint(4,0.2,0.01,0.8)
+
+    def initOscillator(self):
+	self.oscillator = Oscillator('oscillator')
+	self.oscillator.setActivated(True)
+        self.oscillator.setContinuous(True)
+        self.oscillator.setActivated(False)
+        self.oscillator.setTimePeriod(self.robot.timeStep)
+        self.oscillator.magnitude.value = (0.0,)*6+(0.1,)*30
+        self.oscillator.phase.value = (0.0,)*6+(0.0,)*30
+        self.oscillator.omega.value = (0.0,)*6+(3.14,)*30
+	self.oscillator.setEpsilon(0.01)
 
     def createStabilizedCoMTask (self):
         raise Exception("createStabilizedCoMTask is not overloaded")
@@ -186,7 +201,7 @@ class PgLqrTwoDofCoupledStabilizer(Application):
             self.push(self.taskLH)
         if self.posture:
             self.push(self.taskPosture)
-        #self.push(self.taskPosture)
+        self.push(self.taskPosture)
 
     def liftHands(self):
         '''Lift both hanfs.'''
@@ -222,9 +237,12 @@ class PgLqrTwoDofCoupledStabilizer(Application):
             self.runPg()
             print ('Pattern generator run')
         elif self.seqstep==3:
+            self.startOscillations()
+            print ('Oscillations started')
+        elif self.seqstep==4:
             self.liftHands()
             print ('Hands lifted')
-        elif self.seqstep==4:
+        elif self.seqstep==5:
             self.goHalfSitting()
             print ('Half-Sitting the robot can be lifted')
         self.seqstep += 1
@@ -330,10 +348,7 @@ class PgLqrTwoDofCoupledStabilizer(Application):
             plug(self.ccMgaze,self.features['gaze'].reference)
             plug(self.ccVgaze,self.features['gaze'].velocity)
         
-            self.tasks['gaze'].setWithDerivative (True)
-        
-        if self.posture:
-            self.push(self.taskPosture)           
+            self.tasks['gaze'].setWithDerivative (True)         
         
         #######
 
@@ -381,5 +396,18 @@ class PgLqrTwoDofCoupledStabilizer(Application):
 
     def runPg(self):
         pg.walkFewSteps(self.robot, self)
+
+    def startOscillations(self):
+	self.dynamicPosture = Add_of_vector('dynamicPosture')
+	self.dynamicPosture.sin1.value = self.robot.halfSitting
+	plug(self.oscillator.sout, self.dynamicPosture.sin2)
+
+	plug(self.dynamicPosture.sout, self.features['featurePosition'].posture)
+	plug(self.dynamicPosture.sout, self.featurePostureDes.errorIN)
+
+        self.oscillator.setActivated(True)
+
+    def stopOscillations(self):
+        self.oscillator.setActivated(False)
 
 
