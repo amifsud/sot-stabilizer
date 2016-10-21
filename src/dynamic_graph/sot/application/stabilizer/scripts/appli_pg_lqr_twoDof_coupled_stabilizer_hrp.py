@@ -1,4 +1,4 @@
-###
+ ###
 import sys
 import numpy as np
 from dynamic_graph import plug
@@ -39,6 +39,12 @@ plug (robot.device.forceRLEG, zmp.force_1)
 plug (robot.frames['leftFootForceSensor'].position , zmp.sensorPosition_0)
 plug (robot.frames['rightFootForceSensor'].position, zmp.sensorPosition_1)
 
+zmpInterface = ZmpFromForces('zmpInterface')
+plug (est.interface.forceSupport1 , zmpInterface.force_0)
+plug (est.interface.forceSupport2 , zmpInterface.force_1)
+plug (est.interface.positionSupport1, zmpInterface.sensorPosition_0)
+plug (est.interface.positionSupport2, zmpInterface.sensorPosition_1)
+
 zmpEst = ZmpFromForces('zmpEstimated')
 plug (est.forcesSupport1 , zmpEst.force_0)
 plug (est.forcesSupport2, zmpEst.force_1)
@@ -51,7 +57,7 @@ est.interface.setWithAbsolutePose(False)
 est.setWithComBias(False)
 
 # Covariances
-est.setProcessNoiseCovariance(matrixToTuple(np.diag((1e-8,)*12+(1e-4,)*12+(1.e-2,)*6+(1e-15,)*2+(1.e-8,)*3)))
+est.setProcessNoiseCovariance(matrixToTuple(np.diag((1e-8,)*12+(1e-4,)*12+(1.e-2,)*6+(1e-8,)*2+(1.e-8,)*3)))
 est.setMeasurementNoiseCovariance(matrixToTuple(np.diag((1e-3,)*3+(1e-6,)*3))) 
 est.setUnmodeledForceVariance(1e-13)
 est.setForceVariance(1e-8)
@@ -71,14 +77,20 @@ stabilizer.setHorizon(400)
 est.setOn(True)
 
 appli.robot.addTrace( est.name,'state' )
-appli.robot.addTrace( est.name,'momenta')
-appli.robot.addTrace( est.interface.name,'input')
-appli.robot.addTrace( est.interface.name,'measurement')
+appli.robot.addTrace( est.name,'momentaFromForces')
+appli.robot.addTrace( est.name,'momentaFromKinematics')
+appli.robot.addTrace( est.name,'contactNbr' )
+appli.robot.addTrace( est.interface.name,'inputConstSize')
+appli.robot.addTrace( est.interface.name,'measurementConstSize')
 appli.robot.addTrace( zmp.name, 'zmp')
+appli.robot.addTrace( zmpInterface.name, 'zmp')
 appli.robot.addTrace( zmpEst.name, 'zmp')
+#appli.robot.addTrace( robot.device.name, 'control')
+#appli.robot.addTrace( robot.device.name, 'state')
 
 appli.startTracer()
 appli.nextStep()
+appli.nextStep(3)
 appli.nextStep(2)
 
 # Perturbation Generator on control

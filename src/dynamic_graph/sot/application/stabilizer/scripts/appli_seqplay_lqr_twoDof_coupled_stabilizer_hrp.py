@@ -59,7 +59,7 @@ est.setWithComBias(False)
 est.setProcessNoiseCovariance(matrixToTuple(np.diag((1e-8,)*12+(1e-4,)*12+(1.e-2,)*6+(1e-15,)*2+(1.e-8,)*3)))
 est.setMeasurementNoiseCovariance(matrixToTuple(np.diag((1e-3,)*3+(1e-6,)*3))) 
 est.setUnmodeledForceVariance(1e-13)
-est.setForceVariance(1e-8)
+est.setForceVariance(1e-6)
 est.setAbsolutePosVariance(1e-4)
 
 # Contact model definition
@@ -73,7 +73,8 @@ est.setKtv(matrixToTuple(np.diag((60,60,60))))
 appli.gains['trunk'].setConstant(2)
 stabilizer.setFixedGains(True)
 stabilizer.setHorizon(400)
-est.setOn(False)
+est.setOn(True)
+est.interface.setWithModeledForces(True)
 
 appli.robot.addTrace( est.name,'flexibility' )
 appli.robot.addTrace( est.name,'state' )
