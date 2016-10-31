@@ -67,6 +67,7 @@ namespace sotStabilizer
     inertiaSIN_ (NULL, "HRP2LQRTwoDofCoupledStabilizer("+inName+")::input(matrix)::inertia"),
     dinertiaSIN_ (NULL, "HRP2LQRTwoDofCoupledStabilizer("+inName+")::input(matrix)::dinertia"),
     estimatorStateSIN_ (NULL, "HRP2LQRTwoDofCoupledStabilizer("+inName+")::input(vector)::estimatorState"),
+    estimatorAccelerationsSIN_ (NULL, "HRP2LQRTwoDofCoupledStabilizer("+inName+")::input(vector)::estimatorAccelerations"),
     estimatorInputSIN_ (NULL, "HRP2LQRTwoDofCoupledStabilizer("+inName+")::input(vector)::estimatorInput"),
     on_(true), dt_(0.005)
   {
@@ -77,6 +78,7 @@ namespace sotStabilizer
     signalRegistration (inertiaSIN_);
     signalRegistration (dinertiaSIN_);
     signalRegistration (estimatorStateSIN_);
+    signalRegistration (estimatorAccelerationsSIN_);
     signalRegistration (estimatorInputSIN_);
 
     // Set dependencies
@@ -87,6 +89,7 @@ namespace sotStabilizer
     taskSOUT.addDependency (inertiaSIN_);
     taskSOUT.addDependency (dinertiaSIN_);
     taskSOUT.addDependency (estimatorStateSIN_);
+    taskSOUT.addDependency (estimatorAccelerationsSIN_);
     taskSOUT.addDependency (estimatorInputSIN_);
 
         // jacobianSOUT dependencies
@@ -106,6 +109,7 @@ namespace sotStabilizer
     const stateObservation::Matrix & inertia = convertMatrix<stateObservation::Matrix>(inertiaSIN_.access(time));
     const stateObservation::Matrix & dinertia = convertMatrix<stateObservation::Matrix>(dinertiaSIN_.access(time));
     const stateObservation::Vector & estimatorState = convertVector<stateObservation::Vector>(estimatorStateSIN_.access(time));
+    const stateObservation::Vector & estimatorAccelerations = convertVector<stateObservation::Vector>(estimatorAccelerationsSIN_.access(time));
     const stateObservation::Vector & estimatorInput = convertVector<stateObservation::Vector>(estimatorInputSIN_.access(time));
 
     stateObservation::Vector3 gmuz, oriV, angVel, angAcc, Fc;
@@ -120,7 +124,7 @@ namespace sotStabilizer
     oriV = estimatorState.segment<3>(stateObservation::flexibilityEstimation::IMUElasticLocalFrameDynamicalSystem::state::ori);
     R = kine::rotationVectorToRotationMatrix(oriV);
     angVel = estimatorState.segment<3>(stateObservation::flexibilityEstimation::IMUElasticLocalFrameDynamicalSystem::state::angVel);
-    angAcc.setZero();
+    angAcc = estimatorAccelerations.segment<3>(3);
 
     // Estimator input
     cl = estimatorInput.segment<3>(stateObservation::flexibilityEstimation::IMUElasticLocalFrameDynamicalSystem::input::posCom);
