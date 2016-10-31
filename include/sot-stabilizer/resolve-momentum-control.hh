@@ -117,8 +117,14 @@ namespace sotStabilizer
 
     /// Signals
 
-        /// Outputs
+    SignalPtr < dynamicgraph::Vector, int> zmpRefSIN_;
+    SignalPtr < dynamicgraph::Vector, int> momentaSIN_;
+    SignalPtr < dynamicgraph::Matrix, int> inertiaSIN_;
+    SignalPtr < dynamicgraph::Matrix, int> dinertiaSIN_;
+    SignalPtr < dynamicgraph::Vector, int> estimatorStateSIN_;
+    SignalPtr < dynamicgraph::Vector, int> estimatorInputSIN_;
 
+        /// Outputs
 
     /// Parameters
 
