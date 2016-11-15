@@ -88,6 +88,12 @@ appli.robot.addTrace( zmpEst.name, 'zmp')
 #appli.robot.addTrace( robot.device.name, 'control')
 #appli.robot.addTrace( robot.device.name, 'state')
 
+plug(est.flexOrientation,robot.device.attitudeIn)
+#plug(zmpEst.zmp,robot.device.zmp)
+robot.device.setNewKF(False)
+
+time.sleep(30)
+
 appli.startTracer()
 appli.nextStep()
 appli.nextStep(3)
