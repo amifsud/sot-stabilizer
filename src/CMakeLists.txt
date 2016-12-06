@@ -51,6 +51,11 @@ ADD_LIBRARY(${LIBRARY_NAME}
   ${${PROJECT_NAME}_ABSOLUTE_HEADERS}
 )
 
+# define and search for metapod library
+SET(WITH_METAPODFROMURDF TRUE)
+SET(model_name "hrp2_14")
+# Define the simple humanoid model for the metapod algorithm
+ADD_METAPOD_FROM_URDF_MODEL(${model_name})
 
 SET_TARGET_PROPERTIES(${LIBRARY_NAME}
   PROPERTIES
@@ -63,7 +68,7 @@ LINK_DIRECTORIES( ${STATE_OBSERVATION_LIBRARY_DIRS})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 
 ADD_DEPENDENCIES(${LIBRARY_NAME} state-observation sot-state-observation sot-core dynamic-graph dynamic-graph-python)
-TARGET_LINK_LIBRARIES(${LIBRARY_NAME} state-observation sot-state-observation sot-core dynamic-graph dynamic-graph-python)
+TARGET_LINK_LIBRARIES(${LIBRARY_NAME} metapod_${model_name} state-observation sot-state-observation sot-core dynamic-graph dynamic-graph-python)
 
 
 # Add dynamic-graph-python compilation flags and link to dependency libraries

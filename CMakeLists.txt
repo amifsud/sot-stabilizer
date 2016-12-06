@@ -18,6 +18,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/eigen.cmake)
 INCLUDE(cmake/boost.cmake)
+INCLUDE(private_cmake/metapodfromurdf.cmake)
 
 SET(PROJECT_NAME sot-stabilizer)
 SET(PROJECT_DESCRIPTION "Robot's stabilizer")
@@ -45,6 +46,7 @@ ADD_REQUIRED_DEPENDENCY("dynamic-graph >= 1.0.0")
 ADD_REQUIRED_DEPENDENCY("sot-core >= 1.0.0")
 ADD_REQUIRED_DEPENDENCY("state-observation")
 ADD_REQUIRED_DEPENDENCY("sot-state-observation")
+ADD_REQUIRED_DEPENDENCY("metapod >= 1.0.7")
 
 SET(${PROJECT_NAME}_HEADERS
     include/sot-stabilizer/hrp2-decoupled-stabilizer.hh
