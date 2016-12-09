@@ -114,31 +114,31 @@ class LegOscillator(Application):
         self.oscillatorPitch.setActivated(True)
         self.oscillatorPitch.setTimePeriod(self.robot.timeStep)
         self.oscillatorPitch.setActivated(False)
-        self.oscillatorPitch.magnitude.value = (0.1,)
-        self.oscillatorPitch.phase.value = (0.0,)
-        self.oscillatorPitch.omega.value = (0.75,)
+        self.oscillatorPitch.magnitude.value = 0.1
+        self.oscillatorPitch.phase.value = 0.0
+        self.oscillatorPitch.omega.value = 0.75
         
         self.oscillatorYaw = Oscillator('oscillatorYaw')
         self.oscillatorYaw.setContinuous(True)
         self.oscillatorYaw.setActivated(True)
         self.oscillatorYaw.setTimePeriod(self.robot.timeStep)
         self.oscillatorYaw.setActivated(False)
-        self.oscillatorYaw.magnitude.value = (0.1,)
-        self.oscillatorYaw.phase.value = (1.57,)
-        self.oscillatorYaw.omega.value = (0.75,)
+        self.oscillatorYaw.magnitude.value = 0.1
+        self.oscillatorYaw.phase.value = 1.57
+        self.oscillatorYaw.omega.value = 0.75
 
         self.minuspitch =  Multiply_double_vector('minuspitch')
         self.minuspitch.sin1.value = -1
-        plug (self.oscillatorPitch.sout, self.minuspitch.sin2)
+        plug (self.oscillatorPitch.vectorSout, self.minuspitch.sin2)
 
         self.chestyaw =  Multiply_double_vector('chestyaw')
         self.chestyaw.sin1.value = -1
-        plug (self.oscillatorYaw.sout, self.chestyaw.sin2)
+        plug (self.oscillatorYaw.vectorSout, self.chestyaw.sin2)
 
         
         self.stack1 = Stack_of_vector('Stack1')
         self.stack1.sin1.value = (0.0,)*6
-        plug ( self.oscillatorYaw.sout, self.stack1.sin2 )
+        plug ( self.oscillatorYaw.vectorSout, self.stack1.sin2 )
         self.stack1.selec1(0,6)
         self.stack1.selec2(0,1)
 
@@ -150,7 +150,7 @@ class LegOscillator(Application):
 
         self.stack3 = Stack_of_vector('Stack3')
         plug ( self.stack2.sout, self.stack3.sin1 )
-        plug ( self.oscillatorPitch.sout, self.stack3.sin2 )
+        plug ( self.oscillatorPitch.vectorSout, self.stack3.sin2 )
         self.stack3.selec1(0,8)
         self.stack3.selec2(0,1)
 
@@ -162,7 +162,7 @@ class LegOscillator(Application):
 
         self.stack5 = Stack_of_vector('Stack5')
         plug ( self.stack4.sout, self.stack5.sin1 )
-        plug ( self.oscillatorYaw.sout, self.stack5.sin2 )
+        plug ( self.oscillatorYaw.vectorSout, self.stack5.sin2 )
         self.stack5.selec1(0,12)
         self.stack5.selec2(0,1)
 
