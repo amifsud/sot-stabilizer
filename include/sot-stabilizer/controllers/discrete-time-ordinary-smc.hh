@@ -23,7 +23,7 @@
 
 
 #ifndef DISCRETETIMEORDINARYSMC
-#define DISCRETETIMEORDUNARYSMC
+#define DISCRETETIMEORDINARYSMC
 
 #define NDEBUG
 
@@ -38,6 +38,11 @@ namespace controller
         DiscreteTimeOrdinarySMC(unsigned stateSize, unsigned controlSize);
 
         virtual ~DiscreteTimeOrdinarySMC(){}
+
+        void setStateDerivative(stateObservation::Vector dx)
+        {
+            xDerivative_ = dx;
+        }
 
         stateObservation::Vector & computeSurface();
         stateObservation::Vector & computeControl();

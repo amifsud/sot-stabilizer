@@ -17,11 +17,13 @@ namespace controller
         alpha_ = 18;
         order_ = 1;
         lambda_=1;
+
+        xDerivative_.resize(stateSize_);
     }
 
     stateObservation::Vector & DiscreteTimeOrdinarySMC::computeSurface()
     {
-        s_ = exp(lambda_,order_)*x_+xDerivative_;
+        s_ = exp(lambda_,order_)*(x_-xRef_)+xDerivative_;
     }
 
     stateObservation::Vector & DiscreteTimeOrdinarySMC::computeControl()
