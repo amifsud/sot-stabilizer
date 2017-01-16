@@ -15,7 +15,9 @@ namespace controller
         controlSize_=controlSize;
 
         u_.resize(controlSize_);
-        s_.resize(controlSize_);
+        x_.resize(stateSize_);
+        xRef_.resize(stateSize_);
+        s_.resize(stateSize_);
     }
 
     stateObservation::Vector DiscreteTimeSMC::getControl(int time)

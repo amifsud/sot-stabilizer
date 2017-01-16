@@ -52,6 +52,11 @@ namespace controller
             x_=x;
         }
 
+        void setStateRef(stateObservation::Vector x)
+        {
+            xRef_=x;
+        }
+
         stateObservation::Vector & sign(stateObservation::Vector & v)
         {
             opt_.sign.resize(v.size());
@@ -84,6 +89,7 @@ namespace controller
         bool computedInput_;
 
         stateObservation::Vector x_;
+        stateObservation::Vector xRef_;
         stateObservation::Vector s_;
         stateObservation::Vector u_;
 
