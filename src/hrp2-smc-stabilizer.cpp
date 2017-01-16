@@ -79,8 +79,7 @@ namespace sotStabilizer
     stateErrorSOUT_ ("HRP2SMCStabilizer("+inName+")::output(vector)::stateError"),
     controlSOUT_ ("HRP2SMCStabilizer("+inName+")::output(vector)::control"),
     controlGainSIN_ (NULL, "HRP2LQRTwoDofCoupledStabilizer("+inName+")::input(double)::controlGain"),
-    dt_ (.005), on_ (false),
-    controller_(stateSize_,controlSize_)
+    dt_ (.005), on_ (false), controller_(stateSize_,controlSize_)
   {
 
     // Register signals into the entity.

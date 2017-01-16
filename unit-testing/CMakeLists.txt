@@ -36,6 +36,7 @@ SET(tests
     test_state-space-linear-controller
     test_hrp2-linear-state-space-stabilizer
     test_hrp2-lqr-twoDof-coupled-stabilizer
+    test_hrp2-smc-stabilizer
   )
 
 FOREACH(test ${tests})
