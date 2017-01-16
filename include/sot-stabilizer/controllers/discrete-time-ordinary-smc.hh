@@ -44,7 +44,7 @@ namespace controller
 
     protected:
 
-        stateObservation::Vector sDerivative_;
+        stateObservation::Vector xDerivative_;
 
         double alpha_;
         double lambda_;

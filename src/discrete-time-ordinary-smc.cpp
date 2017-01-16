@@ -21,7 +21,7 @@ namespace controller
 
     stateObservation::Vector & DiscreteTimeOrdinarySMC::computeSurface()
     {
-        s_ = exp(lambda_,order_)*s_+sDerivative_;
+        s_ = exp(lambda_,order_)*x_+xDerivative_;
     }
 
     stateObservation::Vector & DiscreteTimeOrdinarySMC::computeControl()
