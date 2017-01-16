@@ -34,15 +34,7 @@ namespace controller
     {
     public:
 
-        DiscreteTimeSMC(unsigned stateSize, unsigned controlSize)
-        {
-            stateSize_=stateSize;
-            controlSize_=controlSize;
-
-            u_.resize(controlSize_);
-            s_.resize(controlSize_);
-        }
-
+        DiscreteTimeSMC(unsigned stateSize, unsigned controlSize);
         virtual ~DiscreteTimeSMC(){}
 
         unsigned getStateSize() const
@@ -53,6 +45,11 @@ namespace controller
         unsigned getControlSize() const
         {
             return controlSize_;
+        }
+
+        void setState(stateObservation::Vector x)
+        {
+            x_=x;
         }
 
         stateObservation::Vector & sign(stateObservation::Vector & v)
@@ -74,32 +71,8 @@ namespace controller
 
         virtual stateObservation::Vector & computeSurface() = 0;
         virtual stateObservation::Vector & computeControl() = 0;
+        stateObservation::Vector getControl(int time);
 
-        stateObservation::Vector getControl(int time)
-        {
-            if (time==time_)
-            {
-
-    #ifndef NDEBUG
-                std::cout<<"Time :"<< time<< std::endl;
-    #endif // NDEBUG*
-
-                computeSurface();
-                computeControl();
-
-                time_ = time_+1;
-            }
-            else
-            {
-                BOOST_ASSERT(time_==time-1 &&
-                 "The requested control time should be current value or next value.");
-
-                BOOST_ASSERT( computedInput_ &&
-                 "Input is not initalized, try requesting for current time.");
-
-            }
-            return u_;
-        }
 
     protected:
 
@@ -110,6 +83,7 @@ namespace controller
 
         bool computedInput_;
 
+        stateObservation::Vector x_;
         stateObservation::Vector s_;
         stateObservation::Vector u_;
 
