@@ -261,26 +261,6 @@ namespace sotStabilizer {
         return convertMatrix<dynamicgraph::Matrix>(Ktv_);
       }
 
-      void setkts(const double & k)
-      {
-          kts_=k;
-      }
-
-      void setktd(const double & k)
-      {
-          ktd_=k;
-      }
-
-      void setkfs(const double & k)
-      {
-          kfs_=k;
-      }
-
-      void setkfd(const double & k)
-      {
-          kfd_=k;
-      }
-
       void setContactsNumber(unsigned int nb)
       {
           contactsNumber_= nb;
@@ -378,11 +358,6 @@ namespace sotStabilizer {
       stateObservation::Matrix Ktv_;
       /// Moment of inertia around y axis
       stateObservation::Matrix I_;
-
-      double kts_;
-      double ktd_;
-      double kfs_;
-      double kfd_;
 
       Vector fc_;
       Vector tc_;

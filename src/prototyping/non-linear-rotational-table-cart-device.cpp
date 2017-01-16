@@ -358,38 +358,6 @@ NonLinearRotationalTableCartDevice::NonLinearRotationalTableCartDevice(const std
                new ::dynamicgraph::command::Setter<NonLinearRotationalTableCartDevice, dynamicgraph::Vector>
                (*this, &NonLinearRotationalTableCartDevice::setState, docstring));
 
-    // set springs and damping
-    docstring =
-      "\n"
-      "    Set kts\n"
-      "\n";
-    addCommand(std::string("setkts"),
-               new ::dynamicgraph::command::Setter<NonLinearRotationalTableCartDevice, double>
-               (*this, &NonLinearRotationalTableCartDevice::setkts, docstring));
-
-    docstring =
-      "\n"
-      "    Set ktd\n"
-      "\n";
-    addCommand(std::string("setktd"),
-               new ::dynamicgraph::command::Setter<NonLinearRotationalTableCartDevice, double>
-               (*this, &NonLinearRotationalTableCartDevice::setktd, docstring));
-
-    docstring =
-      "\n"
-      "    Set kfs\n"
-      "\n";
-    addCommand(std::string("setkfs"),
-               new ::dynamicgraph::command::Setter<NonLinearRotationalTableCartDevice, double>
-               (*this, &NonLinearRotationalTableCartDevice::setkfs, docstring));
-
-    docstring =
-      "\n"
-      "    Set kfd\n"
-      "\n";
-    addCommand(std::string("setkfd"),
-               new ::dynamicgraph::command::Setter<NonLinearRotationalTableCartDevice, double>
-               (*this, &NonLinearRotationalTableCartDevice::setkfd, docstring));
 }
 
 NonLinearRotationalTableCartDevice::~NonLinearRotationalTableCartDevice()

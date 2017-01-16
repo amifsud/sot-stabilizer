@@ -48,7 +48,7 @@ ADD_LIBRARY(${LIBRARY_NAME}
   prototyping/zmp-to-com-algebraic-controller.cpp
   prototyping/linearized-table-cart-device.cc
 #  prototyping/linearized-rotational-table-cart-device.cpp
-#  prototyping/non-linear-rotational-table-cart-device.cpp
+  prototyping/non-linear-rotational-table-cart-device.cpp
   ${${PROJECT_NAME}_ABSOLUTE_HEADERS}
 )
 
