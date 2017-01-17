@@ -381,8 +381,6 @@ Vector6 NonLinearRotationalTableCartDevice::getContactPosition(unsigned i)
     return contactPosVect;
 }
 
-
-
 void NonLinearRotationalTableCartDevice::computeAccelerations
    (const Vector3& positionCom, const Vector3& velocityCom,
     const Vector3& accelerationCom, const Vector3& AngMomentum,
@@ -507,9 +505,8 @@ void NonLinearRotationalTableCartDevice::computeElastContactForcesAndMoments
 
 }
 
-stateObservation::Vector NonLinearRotationalTableCartDevice::computeDynamics(
+void NonLinearRotationalTableCartDevice::computeDynamics(
                                   double inTimeStep,
-                                  stateObservation::Vector &xn,
                                   stateObservation::Vector &un)
 {
   double dt = inTimeStep;
@@ -518,16 +515,16 @@ stateObservation::Vector NonLinearRotationalTableCartDevice::computeDynamics(
   Vector3 angularAcceleration;
   linearAcceleration.setZero();
   angularAcceleration.setZero();
-  Vector3 positionCom=xn.block(0,0,3,1);
-  Vector3 velocityCom=xn.block(12,0,3,1);
+  Vector3 positionCom=xn_.block(0,0,3,1);
+  Vector3 velocityCom=xn_.block(12,0,3,1);
   Vector3 accelerationCom=un.block(0,0,3,1);
   Vector3 AngMomentum;
   Vector3 dotAngMomentum;
   Matrix3 Inertia;
   Matrix3 dotInertia;
-  Vector3 position=xn.block(9,0,3,1);
-  Vector3 linVelocity=xn.block(21,0,3,1);
-  Vector3 oriVector=xn.block(6,0,3,1);
+  Vector3 position=xn_.block(9,0,3,1);
+  Vector3 linVelocity=xn_.block(21,0,3,1);
+  Vector3 oriVector=xn_.block(6,0,3,1);
   Matrix3 orientation;
   stateObservation::Vector oriVect;
   oriVect.resize(6);
@@ -536,14 +533,14 @@ stateObservation::Vector NonLinearRotationalTableCartDevice::computeDynamics(
                 0,
                 oriVector;
   orientation=(kine::vector6ToHomogeneousMatrix(oriVect)).block(0,0,3,3);
-  Vector3 angularVel=xn.block(18,0,3,1);
+  Vector3 angularVel=xn_.block(18,0,3,1);
   Vector6 waistOriVect;
-  waistOriVect <<   xn.block(3,0,3,1),
+  waistOriVect <<   xn_.block(3,0,3,1),
                     0,
                     0,
                     0;
   Matrix3 waistOri=(kine::vector6ToHomogeneousMatrix(waistOriVect)).block(0,0,3,3);
-  Vector3 waistAngVel=xn.block(15,0,3,1);
+  Vector3 waistAngVel=xn_.block(15,0,3,1);
   Vector3 waistAngAcc;
   waistAngAcc   <<  un.block(3,0,2,1),
                     0;
@@ -582,18 +579,11 @@ stateObservation::Vector NonLinearRotationalTableCartDevice::computeDynamics(
             angularAcceleration,
             linearAcceleration;
 
-  //const dynamicgraph::Vector& k2 = A_*(xn + k1*(dt/2)) + B_*inControl;
-  //const dynamicgraph::Vector& k3 = A_*(xn + k2*(dt/2)) + B_*inControl;
-  //const dynamicgraph::Vector& k4 = A_*(xn + k3*dt) + B_*inControl;
-  //dynamicgraph::Vector dx = (k1 + k2*2 + k3*2 + k4)*(dt/6.);//Runge Kutta 4
-
   stateObservation::Vector dx = xn1* dt;
-  stateObservation::Vector nextState = xn + dx;
+  xn_ += dx;
 
   flexAngAccVectSOUT_.setConstant(convertVector<dynamicgraph::Vector>(angularAcceleration));
   flexLinAccSOUT_.setConstant(convertVector<dynamicgraph::Vector>(linearAcceleration));
-
-  return nextState;
 }
 
 void NonLinearRotationalTableCartDevice::incr(double inTimeStep)
@@ -604,8 +594,7 @@ void NonLinearRotationalTableCartDevice::incr(double inTimeStep)
   stateObservation::Vector un = convertVector<stateObservation::Vector>(controlSIN_ (t));
 
   // Compute dynamics
-  stateObservation::Vector nextState = computeDynamics(inTimeStep,xn_, un);
-  xn_=nextState;
+  computeDynamics(inTimeStep, un);
 
   // Rename data
   stateObservation::Vector3 com=xn_.block(0,0,3,1);
@@ -635,7 +624,7 @@ void NonLinearRotationalTableCartDevice::incr(double inTimeStep)
                         flexAngVel;
 
   // Output signals
-  stateSOUT_.setConstant(convertVector<dynamicgraph::Vector>(nextState));
+  stateSOUT_.setConstant(convertVector<dynamicgraph::Vector>(xn_));
   stateSOUT_.setTime (t+1);
   controlStateSOUT_.setConstant(convertVector<dynamicgraph::Vector>(nextControlState));
   controlStateSOUT_.setTime(t+1);

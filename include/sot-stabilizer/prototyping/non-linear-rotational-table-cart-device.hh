@@ -293,9 +293,8 @@ namespace sotStabilizer {
       /**
          \brief Compute the evolution of the state of the pendulum
       */
-      stateObservation::Vector computeDynamics(
+      void computeDynamics(
               double inTimeStep,
-              stateObservation::Vector &xn,
               stateObservation::Vector &un);
 
     private:
