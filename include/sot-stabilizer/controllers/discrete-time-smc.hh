@@ -69,13 +69,13 @@ namespace controller
 
         double & exp(double x, unsigned y)
         {
-            double xOut(x);
+            double xOut(1.0);
             for(int i=0; i<y; ++i) xOut*=x;
             return xOut;
         }
 
-        virtual stateObservation::Vector & computeSurface() = 0;
-        virtual stateObservation::Vector & computeControl() = 0;
+        virtual void computeSurface() = 0;
+        virtual void computeControl() = 0;
         stateObservation::Vector getControl(int time);
 
 

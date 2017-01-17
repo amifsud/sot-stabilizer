@@ -21,12 +21,12 @@ namespace controller
         xDerivative_.resize(stateSize_);
     }
 
-    stateObservation::Vector & DiscreteTimeOrdinarySMC::computeSurface()
+    void DiscreteTimeOrdinarySMC::computeSurface()
     {
         s_ = exp(lambda_,order_)*(x_-xRef_)+xDerivative_;
     }
 
-    stateObservation::Vector & DiscreteTimeOrdinarySMC::computeControl()
+    void DiscreteTimeOrdinarySMC::computeControl()
     {
         u_ = - alpha_*sign(s_);
     }

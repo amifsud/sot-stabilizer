@@ -44,8 +44,8 @@ namespace controller
             xDerivative_ = dx;
         }
 
-        stateObservation::Vector & computeSurface();
-        stateObservation::Vector & computeControl();
+        void computeSurface();
+        void computeControl();
 
     protected:
 
