@@ -285,6 +285,11 @@ namespace sotStabilizer {
           flexAngVelVectSOUT_.setConstant(convertVector<dynamicgraph::Vector>(state.block(18,0,3,1)));
       }
 
+      stateObservation::Vector & getState()
+      {
+          return xn_;
+      }
+
       inline Matrix3& computeRotation_(const Vector3 & x, int i);
       /**
          @}
