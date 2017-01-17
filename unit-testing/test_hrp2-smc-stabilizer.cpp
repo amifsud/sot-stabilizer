@@ -5,6 +5,8 @@
 #include <sot-stabilizer/controllers/discrete-time-ordinary-smc.hh>
 #include <sot-stabilizer/prototyping/non-linear-rotational-table-cart-device.hh>
 
+#include <iostream>
+
 using namespace sotStabilizer;
 using namespace sotStateObservation;
 using namespace stateObservation;
@@ -48,7 +50,7 @@ int testModel()
     system.setContactPosition(0,contactPos1);
     system.setContactPosition(1,contactPos2);
     stateObservation::Vector x0; x0.resize(2*stateSize+6); x0.setZero();
-    x0.segment(0,3) << 0,
+    x0.segment(0,3) << 0.05,
                        0,
                        0.8;
     system.setState(convertVector<dynamicgraph::Vector>(x0));
@@ -56,16 +58,39 @@ int testModel()
     // Stabilizer initialization
     controller::DiscreteTimeOrdinarySMC stabilizer(stateSize, controlSize);
     stateObservation::Vector x; x.resize(stateSize);
-    stateObservation::Vector dx; dx.resize(stateSize);
     stateObservation::Vector u; u.resize(stateSize); u.setZero();
     IndexedMatrixArray state, control;
+    stabilizer.setStateDerivativeRef(stateObservation::Vector::Zero(stateSize)); // stabilization around an equilibrium
+    stateObservation::Matrix lambdaa, alpha0, lambda0;
+    lambdaa.resize(controlSize,controlSize);
+    alpha0.resize(controlSize,stabilizer.getUnderActuatedSize());
+    lambda0.resize(controlSize,stabilizer.getUnderActuatedSize());
+    lambdaa << 10,0,0,0,0,0,
+               0,10,0,0,0,0,
+               0,0,10,0,0,0,
+               0,0,0,10,0,0,
+               0,0,0,0,10,0,
+               0,0,0,0,0,10;
+    lambda0 << 1,0,0,
+               0,1,0,
+               0,0,1,
+               0,0,0,
+               0,0,0,
+               0,0,0;
+    alpha0 <<  1,0,0,
+               0,1,0,
+               0,0,1,
+               0,0,0,
+               0,0,0,
+               0,0,0;
+//    lambda0.setZero(); alpha0.setZero();
+    stabilizer.setLambdaa(lambdaa);
+    stabilizer.setLambda0(lambda0);
+    stabilizer.setAlpha0(alpha0);
 
     // State reference
     stateObservation::Vector xRef; xRef.resize(stateSize);
     xRef.setZero();
-
-    stabilizer.setStateDerivativeRef(stateObservation::Vector::Zero(stateSize));
-    std::cout << "underActuatedSize=" << stabilizer.getUnderActuatedSize() << std::endl;
 
     for(unsigned k=kinit; k<kmax; k++)
     {
