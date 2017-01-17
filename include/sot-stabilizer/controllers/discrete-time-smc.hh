@@ -62,7 +62,7 @@ namespace controller
             opt_.sign.resize(v.size());
             for(int i=0; i<v.size(); ++i)
             {
-                opt_.sign[i]=int(v[i]/std::abs(v[i]));
+                opt_.sign[i]=(v[i]>0)-(v[i]<0);
             }
             return opt_.sign;
         }
