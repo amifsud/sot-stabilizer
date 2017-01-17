@@ -44,18 +44,23 @@ namespace controller
             xDerivative_ = dx;
         }
 
+        void setStateDerivativeRef(stateObservation::Vector dx)
+        {
+            xDerivativeRef_ = dx;
+        }
+
         void computeSurface();
         void computeControl();
 
     protected:
 
         stateObservation::Vector xDerivative_;
+        stateObservation::Vector xDerivativeRef_;
 
         double alpha_;
-        double lambda_;
 
-        unsigned order_;
-
+        unsigned underActuatedSize_;
+        stateObservation::Matrix lambdaa_, lambda0_, alpha0_;
     };
 }
 }
