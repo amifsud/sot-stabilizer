@@ -49,6 +49,11 @@ namespace controller
             xDerivativeRef_ = dx;
         }
 
+        unsigned getUnderActuatedSize()
+        {
+            return underActuatedSize_;
+        }
+
         void computeSurface();
         void computeControl();
 

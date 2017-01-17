@@ -65,6 +65,7 @@ int testModel()
     xRef.setZero();
 
     stabilizer.setStateDerivativeRef(stateObservation::Vector::Zero(stateSize));
+    std::cout << "underActuatedSize=" << stabilizer.getUnderActuatedSize() << std::endl;
 
     for(unsigned k=kinit; k<kmax; k++)
     {
