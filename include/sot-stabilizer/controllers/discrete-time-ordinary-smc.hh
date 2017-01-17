@@ -49,6 +49,21 @@ namespace controller
             xDerivativeRef_ = dx;
         }
 
+        void setLambdaa(stateObservation::Matrix & m)
+        {
+            lambdaa_ = m;
+        }
+
+        void setLambda0(stateObservation::Matrix & m)
+        {
+            lambda0_ = m;
+        }
+
+        void setAlpha0(stateObservation::Matrix & m)
+        {
+            alpha0_ = m;
+        }
+
         unsigned getUnderActuatedSize()
         {
             return underActuatedSize_;
