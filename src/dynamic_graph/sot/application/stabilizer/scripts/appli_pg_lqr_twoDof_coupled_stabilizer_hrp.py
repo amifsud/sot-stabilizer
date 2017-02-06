@@ -14,22 +14,34 @@ appli =  PgLqrTwoDofCoupledStabilizerHRP2(robot, False, False, False)
 appli.withTraces()
 
 est = appli.taskCoMStabilized.estimator
+
+plug(robot.device.velocity,robot.dynamic.velocity)
+appli.robot.addTrace( est.name,'state' )
+est.setOn(False)
+appli.startTracer()
+
+
 stabilizer = appli.taskCoMStabilized
 seq = appli.seq
 
 # Changer raideurs
 
 # Simulation
-#kfe=40000
-#kfv=600
-#kte=600
-#ktv=60
+kfe=40000
+kfv=600
+kte=600
+ktv=60
 
-# Robot
-stabilizer.setkts(350)
-stabilizer.setktd(10)
-stabilizer.setkfs(5000)
-stabilizer.setkfd(600)
+# Robot 
+#kfe=5000
+#kfv=600
+#kte=350
+#ktv=10
+
+stabilizer.setkts(kte)
+stabilizer.setktd(kts)
+stabilizer.setkfs(kfe)
+stabilizer.setkfd(kfs)
 
 plug(robot.device.velocity,robot.dynamic.velocity)
 
@@ -64,15 +76,15 @@ est.setForceVariance(1e-8)
 est.setAbsolutePosVariance(1e-4)
 
 # Contact model definition
-est.setKfe(matrixToTuple(np.diag((40000,40000,40000))))
-est.setKfv(matrixToTuple(np.diag((600,600,600))))
-est.setKte(matrixToTuple(np.diag((600,600,600))))
-est.setKtv(matrixToTuple(np.diag((60,60,60))))
+est.setKfe(matrixToTuple(np.diag((kfe,kfe,kfe))))
+est.setKfv(matrixToTuple(np.diag((kfv,kfv,kfv))))
+est.setKte(matrixToTuple(np.diag((kte,kte,kte))))
+est.setKtv(matrixToTuple(np.diag((ktv,ktv,ktv))))
 
 #est.initAbsolutePoses()
 
 appli.gains['trunk'].setConstant(2)
-stabilizer.setFixedGains(True)
+stabilizer.setFixedGains(False)
 stabilizer.setHorizon(400)
 est.setOn(True)
 
@@ -85,19 +97,24 @@ appli.robot.addTrace( est.interface.name,'measurementConstSize')
 appli.robot.addTrace( zmp.name, 'zmp')
 appli.robot.addTrace( zmpInterface.name, 'zmp')
 appli.robot.addTrace( zmpEst.name, 'zmp')
+appli.robot.addTrace( est.interface.name, 'supportContactsNbr')
 #appli.robot.addTrace( robot.device.name, 'control')
 #appli.robot.addTrace( robot.device.name, 'state')
+
+appli.startTracer()
+
+stabilizer.setStateCost(matrixToTuple(1*np.diag((32000,32000,10000,20000,20000,24000,24000,10,10,1000,1000,1000,120,120))))
+stabilizer.setStateCost(matrixToTuple(1*np.diag((100000,200,10000,200,6000,50,10000,10,1,1000,0.1,1,4,100))))
+
+appli.nextStep()
+appli.nextStep(3)
+appli.nextStep(2)
 
 plug(est.flexOrientation,robot.device.attitudeIn)
 #plug(zmpEst.zmp,robot.device.zmp)
 robot.device.setNewKF(False)
 
 time.sleep(30)
-
-appli.startTracer()
-appli.nextStep()
-appli.nextStep(3)
-appli.nextStep(2)
 
 # Perturbation Generator on control
 perturbatorControl = VectorPerturbationsGenerator('perturbatedControl')
