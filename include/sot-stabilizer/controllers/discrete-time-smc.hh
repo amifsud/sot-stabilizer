@@ -47,11 +47,6 @@ namespace controller
             return controlSize_;
         }
 
-        void setState(stateObservation::Vector x)
-        {
-            x_=x;
-        }
-
         void setStateRef(stateObservation::Vector x)
         {
             xRef_=x;
@@ -88,7 +83,6 @@ namespace controller
 
         bool computedInput_;
 
-        stateObservation::Vector x_;
         stateObservation::Vector xRef_;
         stateObservation::Vector s_;
         stateObservation::Vector u_;

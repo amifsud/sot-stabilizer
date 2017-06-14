@@ -20,7 +20,8 @@ int testModel()
 
     // Dimensions
     const unsigned kinit=0;
-    const unsigned kmax=1400;
+    const unsigned kcontrol = 1500;
+    const unsigned kmax=5000;
 
     const unsigned stateSize=9;
     const unsigned controlSize=6;
@@ -58,7 +59,7 @@ int testModel()
     // Stabilizer initialization
     controller::DiscreteTimeOrdinarySMC stabilizer(stateSize, controlSize);
     stateObservation::Vector x; x.resize(stateSize);
-    stateObservation::Vector u; u.resize(stateSize); u.setZero();
+    stateObservation::Vector u; u.resize(controlSize); u.setZero();
     IndexedMatrixArray state, control;
     stabilizer.setStateDerivativeRef(stateObservation::Vector::Zero(stateSize)); // stabilization around an equilibrium
     stateObservation::Matrix lambdaa, alpha0, lambda0;
@@ -71,19 +72,18 @@ int testModel()
                0,0,0,10,0,0,
                0,0,0,0,10,0,
                0,0,0,0,0,10;
-    lambda0 << 1,0,0,
-               0,1,0,
-               0,0,1,
-               0,0,0,
-               0,0,0,
-               0,0,0;
+    lambda0 << 10,0,0,
+               0,10,0,
+               0,0,10,
+               0,10,0,
+               -10,0,0,
+               0,0,10;
     alpha0 <<  1,0,0,
                0,1,0,
                0,0,1,
-               0,0,0,
-               0,0,0,
-               0,0,0;
-//    lambda0.setZero(); alpha0.setZero();
+               0,1,0,
+               -1,0,0,
+               0,0,1;
     stabilizer.setLambdaa(lambdaa);
     stabilizer.setLambda0(lambda0);
     stabilizer.setAlpha0(alpha0);
@@ -91,6 +91,8 @@ int testModel()
     // State reference
     stateObservation::Vector xRef; xRef.resize(stateSize);
     xRef.setZero();
+    xRef[0]=0.05;
+    xRef[2]=0.8;
 
     for(unsigned k=kinit; k<kmax; k++)
     {
@@ -99,10 +101,10 @@ int testModel()
         x = system.getState();
 
         // Compute next control
-        stabilizer.setState(x.segment(0,stateSize));
+        stabilizer.setState(x.segment(0,stateSize),k);
         stabilizer.setStateDerivative(x.segment(stateSize+3,stateSize));
         stabilizer.setStateRef(xRef);
-        u = stabilizer.getControl(k);
+        if(k>kcontrol) u = stabilizer.getControl(k-kcontrol-1);
 
         // Save state
         state.setValue(x,k);

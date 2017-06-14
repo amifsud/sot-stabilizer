@@ -64,6 +64,11 @@ namespace controller
             alpha0_ = m;
         }
 
+        void setAlpha(stateObservation::Vector & v)
+        {
+            alpha_ = v;
+        }
+
         unsigned getUnderActuatedSize()
         {
             return underActuatedSize_;
@@ -77,10 +82,14 @@ namespace controller
         stateObservation::Vector xDerivative_;
         stateObservation::Vector xDerivativeRef_;
 
-        double alpha_;
+        double alpha1_;
+        stateObservation::Vector alpha_;
 
         unsigned underActuatedSize_;
         stateObservation::Matrix lambdaa_, lambda0_, alpha0_;
+
+        double ns0_;
+        stateObservation::Vector du1_, u1_;
     };
 }
 }

@@ -1,6 +1,6 @@
 # Launch it with py ../robotViewerLauncher.py +compensater.py +appli.py 
 
-from dynamic_graph.sot.application.stabilizer import HRP2LQRTwoDofCoupledStabilizer
+from dynamic_graph.sot.application.stabilizer import HRP2SMCStabilizer
 from dynamic_graph import plug
 import numpy as np
 import dynamic_graph.signal_base as dgsb
@@ -8,15 +8,15 @@ import dynamic_graph.signal_base as dgsb
 from dynamic_graph.sot.core import Stack_of_vector, MatrixHomoToPoseUTheta, OpPointModifier, Multiply_matrix_vector, MatrixHomoToPose, MatrixHomoToPoseRollPitchYaw, MatrixToUTheta, HomoToMatrix, HomoToRotation
 from dynamic_graph.sot.core.matrix_util import matrixToTuple
 
-class HRP2LqrTwoDofCoupledStabilizer(HRP2LQRTwoDofCoupledStabilizer):
+
+
+class HRP2SmcStabilizer(HRP2SMCStabilizer):
     
     
     def __init__(self,robot,taskname = 'com-stabilized'):      
 
 	from dynamic_graph.sot.application.state_observation.initializations.hrp2_model_base_flex_estimator_imu_force import HRP2ModelBaseFlexEstimatorIMUForce  
-	from dynamic_graph.sot.application.state_observation.initializations.hrp2_model_base_flex_estimator_imu_force import FromLocalToGLobalFrame
-
-        HRP2LQRTwoDofCoupledStabilizer.__init__(self,taskname)
+        HRP2SMCStabilizer.__init__(self,taskname)
 
 	robot.device.state.value=robot.halfSitting
 	robot.device.velocity.value=(0.,)*36
@@ -47,16 +47,8 @@ class HRP2LqrTwoDofCoupledStabilizer(HRP2LQRTwoDofCoupledStabilizer):
         plug(robot.device.velocity,self.DWaist.sin2)
 
 	# Estimator of the flexibility state
-        self.estimator = HRP2ModelBaseFlexEstimatorIMUForce (robot, taskname+"Estimator", dt=0.005)
-	self.estimator.interface.setExternalContactPresence (False)
+        self.estimator = HRP2ModelBaseFlexEstimatorIMUForce (robot, taskname+"Estimator")
         plug (self.estimator.interface.modeledContactsNbr,self.nbSupport)
-	plug(self.estimator.flexPosition, self.tflex)
-	plug(self.estimator.flexVelocity, self.dtflex)
-
-	# Getting the floating base kinematic in the global frame
-	#self.floatingBase = FromLocalToGLobalFrame(self.estimator, taskname+"FloatingBase")
-	#plug(robot.device.state, self.floatingBase.sinPos)
-	#plug(robot.device.velocity, self.floatingBase.sinVel)
 
 	self.estimator.state.recompute(2)
 	recomputeDynamic(2)
@@ -76,10 +68,6 @@ class HRP2LqrTwoDofCoupledStabilizer(HRP2LQRTwoDofCoupledStabilizer):
         plug ( robot.dynamic.Jcom  , self.Jcom  )
 	plug ( robot.dynamic.Jwaist, self.Jwaist) 
 	plug ( robot.dynamic.Jchest, self.Jchest)
-
-	# Inertial values
-	plug ( robot.dynamic.inertia, self.inertia)
-        plug(robot.dynamic.angularmomentum,self.angularmomentum)
 
 
 

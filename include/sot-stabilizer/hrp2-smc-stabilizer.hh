@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2017,
+// Copyright (c) 2014,
 // Alexis Mifsud
 //
 // CNRS
@@ -34,6 +34,7 @@
 #include <sot/core/vector-roll-pitch-yaw.hh>
 
 #include <sot-stabilizer/controllers/discrete-time-ordinary-smc.hh>
+#include <sot-stabilizer/controllers/discrete-time-lti-lqr.hh>
 #include <sot-state-observation/tools/definitions.hh>
 
 //#define NDEBUG
@@ -73,6 +74,8 @@ namespace sotStabilizer
   {
     DYNAMIC_GRAPH_ENTITY_DECL ();
   public:
+    // Constant values
+    static double constm_;
 
     /// Constructor by name
     HRP2SMCStabilizer(const std::string& inName);
@@ -107,6 +110,8 @@ namespace sotStabilizer
     void start ()
     {
       on_ = true;
+
+      //flexOriRefSIN_.setConstant(flexOriVectSIN_);
     }
 
     /// Start stabilizer
@@ -131,6 +136,7 @@ namespace sotStabilizer
     }
     /// @}
 
+
     Vector& getControl(Vector& control, const int& time);
 
   private:
@@ -140,25 +146,60 @@ namespace sotStabilizer
     VectorMultiBound& computeControlFeedback(VectorMultiBound& comdot, const int& time);
     // Compute the jacobian
     Matrix& computeJacobian(Matrix& jacobian, const int& time);
+    // Compute the dynamics matrices
+    void computeDynamicsMatrix(const stateObservation::Vector3 cl, const stateObservation::Matrix Kth, const stateObservation::Matrix Kdth, const int& time);
+    // Compute the inertia tensor
+    stateObservation::Matrix3 computeInert(const stateObservation::Vector& com, const int& time);
+
 
     /// Signals
-
         /// State
     // Position of center of mass
     SignalPtr < dynamicgraph::Vector, int> comSIN_;
+    // Homogeneous representation of the waist position
+    SignalPtr <dynamicgraph::Matrix, int> waistHomoSIN_;
+    // Orientation of the flexibility on vector form
+    SignalPtr <dynamicgraph::Vector, int> flexOriVectSIN_;
     // Velocity of center of mass
     SignalPtr < dynamicgraph::Vector, int> comDotSIN_;
+    // Refrence angular velocity of the waist
+    SignalPtr < dynamicgraph::Vector , int > waistAngVelSIN_;
+    // Velocity of the flexibility
+    SignalPtr <dynamicgraph::Vector, int> flexAngVelVectSIN_;
+
+        /// Bias on the CoM
+    SignalPtr < dynamicgraph::Vector, int> comBiasSIN_;
 
         /// Reference state
     // Position of center of mass
     SignalPtr < dynamicgraph::Vector, int> comRefSIN_;
+    // Perturbation
+    SignalPtr < dynamicgraph::Vector, int> perturbationVelSIN_;
+    SignalPtr < dynamicgraph::Vector, int> perturbationAccSIN_;
+    // Homogeneous representation of the waist position
+    SignalPtr <dynamicgraph::Vector, int> waistOriRefSIN_;
+    // Orientation of the flexibility on vector form
+    SignalPtr <dynamicgraph::Vector, int> flexOriRefSIN_;
     // Velocity of center of mass
     SignalPtr < dynamicgraph::Vector, int> comDotRefSIN_;
+    // Refrence angular velocity of the waist
+    SignalPtr < dynamicgraph::Vector , int > waistVelRefSIN_;
+    // Velocity of the flexibility
+    SignalPtr <dynamicgraph::Vector, int> flexAngVelRefSIN_;
+
+        /// Support contact positions
+    SignalPtr <dynamicgraph::Vector, int> supportPos1SIN_;
+    SignalPtr <dynamicgraph::Vector, int> supportPos2SIN_;
+
+        /// Inertia
+    SignalPtr < dynamicgraph::Matrix, int> inertiaSIN_;
 
         /// Jacobians
     SignalPtr < dynamicgraph::Matrix, int> jacobianComSIN_;
+    SignalPtr < dynamicgraph::Matrix, int> jacobianWaistSIN_;
+    SignalPtr < dynamicgraph::Matrix, int> jacobianChestSIN_;
 
-        /// Control gain
+        /// Control gain for 0 supports case
     SignalPtr <double, int> controlGainSIN_;
 
         /// Outputs
@@ -166,24 +207,43 @@ namespace sotStabilizer
     SignalTimeDependent <Vector, int> stateSOUT_;
     // state reference output
     SignalTimeDependent <Vector, int> stateRefSOUT_;
-    // state error output
+    // error state output
     SignalTimeDependent <Vector, int> stateErrorSOUT_;
+    // error output
+    SignalTimeDependent <Vector, int> errorSOUT_;
     // control output
     SignalTimeDependent <Vector, int> controlSOUT_;
+    // integrated task output
+    SignalTimeDependent <Vector, int> integratedTaskSOUT_;
+
+    // Number of support feet
+    SignalPtr <unsigned int, int> nbSupportSIN_;
+
 
     /// Parameters
     // Time sampling period
     double dt_;
     // Whether stabilizer is on
     bool on_;
+    // Number of feet in support
+    unsigned int nbSupport_;
+    Vector supportPos1_, supportPos2_;
 
-    controller::DiscreteTimeOrdinarySMC controller_;
+    controller::DiscreteTimeOrdinarySMC SMCController_;
+    controller::DiscreteTimeLTILQR LQRController_;
 
-    stateObservation::Vector xk_;
-    stateObservation::Vector xkRef_;
-    stateObservation::Vector dxk_;
-    stateObservation::Vector uk_;
     stateObservation::Vector preTask_;
+    stateObservation::Vector integratedTask_;
+
+    // For the LQR
+    bool computed_;
+    bool fixedGains_;
+    stateObservation::Matrix3 Kth_, Kdth_;
+    double ktd_, kts_, kfs_, kfd_;
+    stateObservation::Matrix A_, B_;
+    stateObservation::Matrix3 I_;
+
+    double hrp2Mass_;
 
   }; // class Stabilizer
 } // namespace sotStabiilizer

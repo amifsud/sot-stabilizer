@@ -5,31 +5,16 @@ from dynamic_graph import plug
 import dynamic_graph.signal_base as dgsb
 from dynamic_graph.sot.core import Stack_of_vector, OpPointModifier, MatrixHomoToPose, Multiply_matrixHomo_vector
 from dynamic_graph.sot.application.state_observation.initializations.hrp2_model_base_flex_estimator_imu_force import HRP2ModelBaseFlexEstimatorIMUForce
-from dynamic_graph.sot.application.stabilizer.scenarii.pg_lqr_twoDof_coupled_stabilizer_hrp2 import PgLqrTwoDofCoupledStabilizerHRP2
+from dynamic_graph.sot.application.stabilizer.scenarii.pg_smc_stabilizer_hrp2 import PgSMCStabilizerHRP2
 from dynamic_graph.sot.application.stabilizer import VectorPerturbationsGenerator
 from dynamic_graph.sot.core.matrix_util import matrixToTuple
 from dynamic_graph.sot.dynamics.zmp_from_forces import ZmpFromForces
 
-appli =  PgLqrTwoDofCoupledStabilizerHRP2(robot, False, False, False)
+appli =  PgSMCStabilizerHRP2(robot, False, False, False)
 appli.withTraces()
 
 est = appli.taskCoMStabilized.estimator
 stabilizer = appli.taskCoMStabilized
-seq = appli.seq
-
-# Changer raideurs
-
-# Simulation
-#kfe=40000
-#kfv=600
-#kte=600
-#ktv=60
-
-# Robot
-stabilizer.setkts(350)
-stabilizer.setktd(10)
-stabilizer.setkfs(5000)
-stabilizer.setkfd(600)
 
 plug(robot.device.velocity,robot.dynamic.velocity)
 
@@ -72,14 +57,9 @@ est.setKtv(matrixToTuple(np.diag((60,60,60))))
 #est.initAbsolutePoses()
 
 appli.gains['trunk'].setConstant(2)
-stabilizer.setFixedGains(True)
-stabilizer.setHorizon(400)
-#est.setOn(True)
+est.setOn(True)
 
 appli.robot.addTrace( est.name,'state' )
-appli.robot.addTrace( est.name,'flexInverse' )
-appli.robot.addTrace( est.name,'flexInverseOmega' )
-appli.robot.addTrace( est.name,'observationMatrix' )
 appli.robot.addTrace( est.name,'momentaFromForces')
 appli.robot.addTrace( est.name,'momentaFromKinematics')
 appli.robot.addTrace( est.name,'contactNbr' )
@@ -88,9 +68,11 @@ appli.robot.addTrace( est.interface.name,'measurementConstSize')
 appli.robot.addTrace( zmp.name, 'zmp')
 appli.robot.addTrace( zmpInterface.name, 'zmp')
 appli.robot.addTrace( zmpEst.name, 'zmp')
-appli.robot.addTrace( appli.taskCoMStabilized.floatingBase.name, 'soutHomo')
-appli.robot.addTrace( appli.taskCoMStabilized.floatingBase.name, 'soutPos')
-appli.robot.addTrace( appli.taskCoMStabilized.floatingBase.name, 'soutVel')
+appli.robot.addTrace( stabilizer.name, 'stateError')
+appli.robot.addTrace( stabilizer.name, 'state')
+appli.robot.addTrace( stabilizer.name, 'control')
+appli.robot.addTrace( stabilizer.name, 'task')
+appli.robot.addTrace( stabilizer.name, 'integratedTask')
 #appli.robot.addTrace( robot.device.name, 'control')
 #appli.robot.addTrace( robot.device.name, 'state')
 

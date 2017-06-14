@@ -781,8 +781,6 @@ namespace sotStabilizer
                   nbSupport_=nbSupport;
                   computed_=true;
                   comRef_=comRef;
-                  xSimu_=xk;
-                  toc1  = boost::posix_time::microsec_clock::local_time();
               }
 
               controller_.setState(dxk,time);
